@@ -9,7 +9,7 @@ $start = time();
 
 
 //urls that will be checked
-$js = 'http://lite.socialcube.net/js/socialcube.js';
+$js = 'http://orf.at/oon/media/3.0/jquery.video-min.js';
 $https = 'https://ip.haschek.at';
 $url = 'http://haschek-solutions.com/index.html';
 $ipcheck_url = 'http://ip.haschek.at';
