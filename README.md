@@ -1,4 +1,4 @@
-# Simple proxy checkign script
+# Simple proxy checking script
 
 This script was used while reachsearching for [this blog entry](https://blog.haschek.at/post/fd854)
 
