@@ -14,7 +14,7 @@ Every line must be one ip:port combination like: 192.168.0.5:3128
 
 ## What else does it do
 It will create a folder with a random session name and save a copy of all modified data there.
-So if a .js file is modified it will safe it with the name of the proxy so you can analyze it further.
+So if a .js file is modified it will save it with the name of the proxy so you can analyze it further.
 
 
 ## Output looks like this
