@@ -1,12 +1,9 @@
 <?php
+
+// Things you can edit:
 $type = 'http';
 $proxylist = 'proxylist_'.$type.'.txt';
-$session = 'scan_'.$type.'_'.substr(md5(rand(0,1000).time()),-8); //session used for storing data
-$socks = ($type=='socks'?true:false);
 $timeout = 5;
-
-$start = time();
-
 
 //urls that will be checked
 $js = 'http://orf.at/oon/media/3.0/jquery.video-min.js';
@@ -14,6 +11,14 @@ $https = 'https://ip.haschek.at';
 $url = 'http://s.haschek.at/hascheksolutions/index.html';
 $ipcheck_url = 'http://ip.haschek.at';
 
+
+// from here on just things you can edit if you know what you're doing
+//
+//
+
+$start = time();
+$session = 'scan_'.$type.'_'.substr(md5(rand(0,1000).time()),-8); //session used for storing data
+$socks = ($type=='socks'?true:false);
 
 //	reference data
 $refdata = @scanProxy(false,$js,$socks,$timeout);
