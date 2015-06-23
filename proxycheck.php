@@ -4,6 +4,7 @@
 $type = 'http';
 $proxylist = 'proxylist_'.$type.'.txt';
 $timeout = 5;
+$basedir = 'tmp/'; // the directory where session folders will be stored
 
 //urls that will be checked
 $js = 'http://orf.at/oon/media/3.0/jquery.video-min.js';
@@ -25,13 +26,17 @@ $refdata = @scanProxy(false,$js,$socks,$timeout);
 $refdata_html = @scanProxy(false,$url,$socks,$timeout);
 $ip_ref = @scanProxy(false,$ipcheck_url,$socks,$timeout);
 
+if(!file_exists($proxylist)) exit("[X] File $proxylist not found.\n");
+if(!is_dir($basedir))
+	mkdir($basedir);
+mkdir($basedir.$session);
 
 $lines = file($proxylist);
-mkdir('tmp/');
-mkdir('tmp/'.$session);
+echo "[i] Got ".count($lines)." proxies to test\n";
 foreach($lines as $line)
 {
 	$proxy = trim($line);
+	if(!$proxy) continue;
 	$out['tested']++;
 	$bad = false;
 	echo "[i] Trying $proxy";
@@ -51,15 +56,15 @@ foreach($lines as $line)
 
 	if($data || $data_html || $https_data || $ip_viaproxy) //online
 	{
-		addData("tmp/".$session."/up.txt",$proxy);
+		addData($basedir.$session."/up.txt",$proxy);
 		$out['up']++;
 
 		if($altered_js=='yes' && $data!='')
 		{
 			echo "\t [JS]";
-			addData("tmp/".$session."/bad_js.txt",$proxy);
-			addData("tmp/".$session."/bad.txt",$proxy);
-			saveData("tmp/".$session."/".str_replace(':', '-', $proxy)."_".basename($js),$data);
+			addData($basedir.$session."/bad_js.txt",$proxy);
+			addData($basedir.$session."/bad.txt",$proxy);
+			saveData($basedir.$session."/".str_replace(':', '-', $proxy)."_".basename($js),$data);
 			$out['altered_js']++;
 			$bad = true;
 		}
@@ -67,9 +72,9 @@ foreach($lines as $line)
 		if($altered_html=='yes' && $data_html!='')
 		{
 			echo "\t [HTML]";
-			addData("tmp/".$session."/bad_html.txt",$proxy);
-			addData("tmp/".$session."/bad.txt",$proxy);
-			saveData("tmp/".$session."/".str_replace(':', '-', $proxy)."_".basename($url),$data_html);
+			addData($basedir.$session."/bad_html.txt",$proxy);
+			addData($basedir.$session."/bad.txt",$proxy);
+			saveData($basedir.$session."/".str_replace(':', '-', $proxy)."_".basename($url),$data_html);
 			$out['altered_html']++;
 			$bad = true;
 		}
@@ -77,20 +82,20 @@ foreach($lines as $line)
 		if($ip_altered=='no' && $ip_viaproxy!='')
 		{
 			echo "\t [NOIP]";
-			addData("tmp/".$session."/transparent.txt",$proxy);
+			addData($basedir.$session."/transparent.txt",$proxy);
 			$out['nonaltered_ip']++;
 		} else $bad = true;
 
 		if($http_allowed=='yes')
 		{
-			addData("tmp/".$session."/http_allowed.txt",$proxy);
+			addData($basedir.$session."/http_allowed.txt",$proxy);
 			$out['http_allowed']++;
 		}
 
 		if($https_allowed=='no')
 		{
 			echo "\t [HTTPS]";
-			addData("tmp/".$session."/https_forbidden.txt",$proxy);
+			addData($basedir.$session."/https_forbidden.txt",$proxy);
 			$out['https_forbidden']++;
 		}
 		else {$out['https_allowed']++;$bad = true;}
@@ -98,7 +103,7 @@ foreach($lines as $line)
 		if(!$bad)
 		{
 			echo " [GOOD]";
-			addData("tmp/".$session."/good.txt",$proxy);
+			addData($basedir.$session."/good.txt",$proxy);
 		}
 			
 
@@ -124,7 +129,7 @@ echo "IP not hidden\t".$out['nonaltered_ip']."\n";
 echo "Runtime\t".round((time()-$start)/60)." Minutes\n";
 
 if(is_array($p))
-	saveData("tmp/".$session."/bad_proxies_$type.txt",implode("\n", $p));
+	saveData($basedir.$session."/bad_proxies_$type.txt",implode("\n", $p));
 
 
 /**************************************************************************/
