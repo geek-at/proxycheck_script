@@ -21,15 +21,19 @@ $start = time();
 $session = 'scan_'.$type.'_'.substr(md5(rand(0,1000).time()),-8); //session used for storing data
 $socks = ($type=='socks'?true:false);
 
+if(!file_exists($proxylist)) exit("[X] File $proxylist not found.\n");
+if(!is_dir($basedir))
+	mkdir($basedir);
+mkdir($basedir.$session);
+
 //	reference data
 $refdata = @scanProxy(false,$js,$socks,$timeout);
 $refdata_html = @scanProxy(false,$url,$socks,$timeout);
 $ip_ref = @scanProxy(false,$ipcheck_url,$socks,$timeout);
 
-if(!file_exists($proxylist)) exit("[X] File $proxylist not found.\n");
-if(!is_dir($basedir))
-	mkdir($basedir);
-mkdir($basedir.$session);
+//saving the original files so you can do diffs on them
+saveData($basedir.$session."/original_".basename($js),$refdata);
+saveData($basedir.$session."/original_".basename($url),$refdata_html);
 
 $lines = file($proxylist);
 echo "[i] Got ".count($lines)." proxies to test\n";
