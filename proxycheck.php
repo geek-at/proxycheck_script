@@ -1,10 +1,14 @@
 <?php
 
 // Things you can edit:
-$type = 'http';
-$proxylist = 'proxylist_'.$type.'.txt';
-$timeout = 5;
-$basedir = 'tmp/'; // the directory where session folders will be stored
+$type = $argv[2]?$argv[2]:'http';
+$proxylist = $argv[1]?$argv[1]:'proxylist_'.$type.'.txt';
+$timeout = $argv[3]?$argv[3]:5;
+$basedir = $argv[4]?$argv[4]:'tmp/'; // the directory where session folders will be stored
+
+
+
+
 
 //urls that will be checked
 $js = 'http://orf.at/oon/media/3.0/jquery.video-min.js';
@@ -88,7 +92,8 @@ foreach($lines as $line)
 			echo "\t [NOIP]";
 			addData($basedir.$session."/transparent.txt",$proxy);
 			$out['nonaltered_ip']++;
-		} else $bad = true;
+			$bad = true;
+		}
 
 		if($http_allowed=='yes')
 		{
@@ -101,8 +106,9 @@ foreach($lines as $line)
 			echo "\t [HTTPS]";
 			addData($basedir.$session."/https_forbidden.txt",$proxy);
 			$out['https_forbidden']++;
+			$bad = true;
 		}
-		else {$out['https_allowed']++;$bad = true;}
+		else {$out['https_allowed']++;}
 
 		if(!$bad)
 		{
